@@ -1,18 +1,40 @@
 <!DOCTYPE html>
- <html lang="id">
- <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, 
-initial-scale=1.0">
- <title>GUI Sederhana</title>
- </head>
- <body>
- <h1 id="title">Halo, Mahasiswa!</h1>
- <button onclick="ubahTeks()">Klik Saya</button>
- <script>
- function ubahTeks() {
- document.getElementById("title").innerText = "Teks telah berubah!";
- }
- </script>
- </body>
- </html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUI Sederhana</title>
+</head>
+<body>
+
+    <h1 id="title">Halo, Mahasiswa!</h1>
+    <h2>Halo, Mahasiswa!</h2>
+
+    <p>ini hal morning</p>
+    <ol>
+        <li>satu</li>
+        <li>dua</li>
+    </ol>
+
+    <p>1 2<br>3 4</p>
+
+    <!-- Avatar -->
+    <img src="https://i.imgur.com/y0NYm2z.png" alt="Avatar" width="200">
+
+    <br><br>
+
+    <!-- Input nama -->
+    <input type="text" id="nameInput" placeholder="Nama Anda">
+    <button onclick="tampilkanNama()">Klik Saya</button>
+
+    <h2 id="output"></h2>
+
+    <script>
+        function tampilkanNama() {
+            let nama = document.getElementById("nameInput").value;
+            document.getElementById("output").innerText = "Halo, " + nama + "!";
+        }
+    </script>
+
+</body>
+</html>
