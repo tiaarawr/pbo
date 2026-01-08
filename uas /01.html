@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Aplikasi Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff9acb, #8fd3f4);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .box {
+      background: #ffffff;
+      padding: 30px 25px;
+      width: 320px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #btnMasuk {
+      background: linear-gradient(90deg, #ff6fae, #6fb8ff);
+      color: white;
+      margin-top: 12px;
+    }
+
+    #btnReset {
+      margin-top: 8px;
+      background: #f0f0f0;
+      color: #444;
+    }
+
+    #btnKeluar {
+      margin-top: 15px;
+      background: #e53935;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box" id="app"></div>
+
+<script>
+  // CLASS USER
+  class User {
+    constructor(username, password) {
+      this.username = username;
+      this.password = password;
+    }
+  }
+
+  // CLASS AUTH
+  class AuthManager {
+    constructor(containerId) {
+      this.container = document.getElementById(containerId);
+      this.initUserDatabase();
+      this.tampilFormLogin();
+    }
+
+    initUserDatabase() {
+      if (!localStorage.getItem('akunUser')) {
+        const users = [
+          new User('Tiara', '12345')
+        ];
+        localStorage.setItem('akunUser', JSON.stringify(users));
+      }
+    }
+
+    tampilFormLogin() {
+      this.container.innerHTML = `
+        <h2>Login</h2>
+        <input type="text" id="inputUser" placeholder="Username">
+        <input type="password" id="inputPass" placeholder="Password">
+        <button id="btnMasuk">Login</button>
+        <button id="btnReset">Cancel</button>
+      `;
+
+      document.getElementById('btnMasuk')
+        .addEventListener('click', () => this.prosesLogin());
+
+      document.getElementById('btnReset')
+        .addEventListener('click', () => this.resetForm());
+    }
+
+    prosesLogin() {
+      const username = document.getElementById('inputUser').value;
+      const password = document.getElementById('inputPass').value;
+
+      const users = JSON.parse(localStorage.getItem('akunUser'));
+
+      const validUser = users.find(
+        u => u.username === username && u.password === password
+      );
+
+      if (!validUser) {
+        alert('Login gagal! Username atau password salah.');
+      } else {
+        this.tampilProfil(validUser.username);
+      }
+    }
+
+    tampilProfil(username) {
+      this.container.innerHTML = `
+        <h2>Berhasil Login ✅</h2>
+        <p>Selamat datang, <b>${username}</b></p>
+        <button id="btnKeluar">Logout</button>
+      `;
+
+      document.getElementById('btnKeluar')
+        .addEventListener('click', () => this.keluarSistem());
+    }
+
+    keluarSistem() {
+      this.tampilFormLogin();
+    }
+
+    resetForm() {
+      document.getElementById('inputUser').value = '';
+      document.getElementById('inputPass').value = '';
+    }
+  }
+
+  // OBJECT
+  new AuthManager('app');
+</script>
+
+</body>
+</html>
