@@ -2,11 +2,12 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Aplikasi Login</title>
+  <title>Login Tiara</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ff9acb, #8fd3f4);
+      background: linear-gradient(135deg, #ffd6e8, #cfe9ff);
       margin: 0;
       min-height: 100vh;
       display: flex;
@@ -18,9 +19,14 @@
       background: #ffffff;
       padding: 30px 25px;
       width: 320px;
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.15);
       text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #e75480;
     }
 
     input {
@@ -28,7 +34,8 @@
       padding: 10px;
       margin: 10px 0;
       border-radius: 8px;
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
+      font-size: 14px;
     }
 
     button {
@@ -38,114 +45,116 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
+      transition: transform 0.1s ease;
     }
 
-    #btnMasuk {
-      background: linear-gradient(90deg, #ff6fae, #6fb8ff);
+    button:active {
+      transform: scale(0.97);
+    }
+
+    #loginBtn {
+      background: linear-gradient(90deg, #ff9acb, #8fd3f4);
       color: white;
       margin-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 15px;
     }
 
-    #btnReset {
+    #cancelBtn {
       margin-top: 8px;
-      background: #f0f0f0;
-      color: #444;
+      background: #f2f2f2;
+      color: #555;
     }
 
-    #btnKeluar {
+    #logoutBtn {
       margin-top: 15px;
-      background: #e53935;
+      background: #ff6b6b;
       color: white;
+    }
+
+    .user-info {
+      text-align: center;
     }
   </style>
 </head>
+
 <body>
 
-<div class="box" id="app"></div>
+  <div class="box" id="app"></div>
 
-<script>
-  // CLASS USER
-  class User {
-    constructor(username, password) {
-      this.username = username;
-      this.password = password;
-    }
-  }
+  <script>
+    class LoginTiara {
+      constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        this.initUserData();
+        this.showLoginForm();
+      }
 
-  // CLASS AUTH
-  class AuthManager {
-    constructor(containerId) {
-      this.container = document.getElementById(containerId);
-      this.initUserDatabase();
-      this.tampilFormLogin();
-    }
+      initUserData() {
+        if (!localStorage.getItem('users')) {
+          const users = [
+            { username: 'tiara', password: 'tiara123' }
+          ];
+          localStorage.setItem('users', JSON.stringify(users));
+        }
+      }
 
-    initUserDatabase() {
-      if (!localStorage.getItem('akunUser')) {
-        const users = [
-          new User('Tiara', '12345')
-        ];
-        localStorage.setItem('akunUser', JSON.stringify(users));
+      showLoginForm() {
+        this.container.innerHTML = `
+          <h2>Login</h2>
+          <input type="text" id="username" placeholder="Username">
+          <input type="password" id="password" placeholder="Password">
+          <button id="loginBtn">🐱 Login</button>
+          <button id="cancelBtn">Cancel</button>
+        `;
+
+        document.getElementById('loginBtn')
+          .addEventListener('click', () => this.handleLogin());
+
+        document.getElementById('cancelBtn')
+          .addEventListener('click', () => this.clearInput());
+      }
+
+      handleLogin() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const users = JSON.parse(localStorage.getItem('users'));
+        const validUser = users.find(
+          u => u.username === username && u.password === password
+        );
+
+        if (!validUser) {
+          alert('❌ Login gagal, periksa username atau password!');
+        } else {
+          this.showProfile(validUser.username);
+        }
+      }
+
+      showProfile(username) {
+        this.container.innerHTML = `
+          <div class="user-info">
+            <h2>Welcome 💖</h2>
+            <p>Hai <b>${username}</b>, kamu berhasil login</p>
+            <button id="logoutBtn">Logout</button>
+          </div>
+        `;
+
+        document.getElementById('logoutBtn')
+          .addEventListener('click', () => this.showLoginForm());
+      }
+
+      clearInput() {
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
       }
     }
 
-    tampilFormLogin() {
-      this.container.innerHTML = `
-        <h2>Login</h2>
-        <input type="text" id="inputUser" placeholder="Username">
-        <input type="password" id="inputPass" placeholder="Password">
-        <button id="btnMasuk">Login</button>
-        <button id="btnReset">Cancel</button>
-      `;
-
-      document.getElementById('btnMasuk')
-        .addEventListener('click', () => this.prosesLogin());
-
-      document.getElementById('btnReset')
-        .addEventListener('click', () => this.resetForm());
-    }
-
-    prosesLogin() {
-      const username = document.getElementById('inputUser').value;
-      const password = document.getElementById('inputPass').value;
-
-      const users = JSON.parse(localStorage.getItem('akunUser'));
-
-      const validUser = users.find(
-        u => u.username === username && u.password === password
-      );
-
-      if (!validUser) {
-        alert('Login gagal! Username atau password salah.');
-      } else {
-        this.tampilProfil(validUser.username);
-      }
-    }
-
-    tampilProfil(username) {
-      this.container.innerHTML = `
-        <h2>Berhasil Login ✅</h2>
-        <p>Selamat datang, <b>${username}</b></p>
-        <button id="btnKeluar">Logout</button>
-      `;
-
-      document.getElementById('btnKeluar')
-        .addEventListener('click', () => this.keluarSistem());
-    }
-
-    keluarSistem() {
-      this.tampilFormLogin();
-    }
-
-    resetForm() {
-      document.getElementById('inputUser').value = '';
-      document.getElementById('inputPass').value = '';
-    }
-  }
-
-  // OBJECT
-  new AuthManager('app');
-</script>
+    new LoginTiara('app');
+  </script>
 
 </body>
 </html>
