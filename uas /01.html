@@ -16,17 +16,17 @@
     }
 
     .box {
-      background: #ffffff;
-      padding: 30px 25px;
+      background: #fff;
       width: 320px;
+      padding: 30px 25px;
       border-radius: 18px;
       box-shadow: 0 12px 28px rgba(0,0,0,0.15);
       text-align: center;
     }
 
     h2 {
-      margin-bottom: 15px;
       color: #e75480;
+      margin-bottom: 15px;
     }
 
     input {
@@ -43,26 +43,26 @@
       padding: 10px;
       border: none;
       border-radius: 8px;
-      cursor: pointer;
       font-weight: bold;
+      cursor: pointer;
     }
 
     #loginBtn {
       background: linear-gradient(90deg, #ff9acb, #8fd3f4);
-      color: white;
+      color: #fff;
       margin-top: 12px;
     }
 
     #cancelBtn {
-      margin-top: 8px;
       background: #f2f2f2;
       color: #555;
+      margin-top: 8px;
     }
 
     #logoutBtn {
-      margin-top: 15px;
       background: #ff6b6b;
-      color: white;
+      color: #fff;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -75,22 +75,27 @@
     class LoginTiara {
       constructor(containerId) {
         this.container = document.getElementById(containerId);
-        this.initUserData();
-        this.showLoginForm();
+        this.initializeData();
+        this.renderLogin();
       }
 
-      initUserData() {
-        const users = [
-          { username: 'tiara', password: 'tiara123' }
-        ];
-        localStorage.setItem('tiaraUsers', JSON.stringify(users));
+      // Inisialisasi data user
+      initializeData() {
+        if (!localStorage.getItem('tiaraUsers')) {
+          const users = [
+            { username: 'tiara', password: 'tiara123' }
+          ];
+          localStorage.setItem('tiaraUsers', JSON.stringify(users));
+        }
       }
 
+      // Ambil data user
       getUsers() {
-        return JSON.parse(localStorage.getItem('tiaraUsers'));
+        return JSON.parse(localStorage.getItem('tiaraUsers')) || [];
       }
 
-      showLoginForm() {
+      // Tampilkan form login
+      renderLogin() {
         this.container.innerHTML = `
           <h2>Login</h2>
           <input type="text" id="username" placeholder="Username">
@@ -100,29 +105,31 @@
         `;
 
         document.getElementById('loginBtn')
-          .addEventListener('click', () => this.handleLogin());
+          .addEventListener('click', () => this.login());
 
         document.getElementById('cancelBtn')
-          .addEventListener('click', () => this.clearInput());
+          .addEventListener('click', () => this.clearForm());
       }
 
-      handleLogin() {
+      // Proses login
+      login() {
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value.trim();
 
         const users = this.getUsers();
-        const validUser = users.find(
-          u => u.username === username && u.password === password
+        const isValid = users.some(
+          user => user.username === username && user.password === password
         );
 
-        if (!validUser) {
-          alert('❌ Login gagal!');
+        if (isValid) {
+          this.renderProfile(username);
         } else {
-          this.showProfile(username);
+          alert('❌ Login gagal!');
         }
       }
 
-      showProfile(username) {
+      // Tampilkan halaman profil
+      renderProfile(username) {
         this.container.innerHTML = `
           <h2>Welcome 💖</h2>
           <p>Hai <b>${username}</b>, kamu berhasil login</p>
@@ -130,15 +137,17 @@
         `;
 
         document.getElementById('logoutBtn')
-          .addEventListener('click', () => this.showLoginForm());
+          .addEventListener('click', () => this.renderLogin());
       }
 
-      clearInput() {
+      // Bersihkan input
+      clearForm() {
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
       }
     }
 
+    // Inisialisasi aplikasi
     new LoginTiara('app');
   </script>
 
