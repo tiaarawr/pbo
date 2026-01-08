@@ -45,22 +45,12 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-      transition: transform 0.1s ease;
-    }
-
-    button:active {
-      transform: scale(0.97);
     }
 
     #loginBtn {
       background: linear-gradient(90deg, #ff9acb, #8fd3f4);
       color: white;
       margin-top: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 15px;
     }
 
     #cancelBtn {
@@ -73,10 +63,6 @@
       margin-top: 15px;
       background: #ff6b6b;
       color: white;
-    }
-
-    .user-info {
-      text-align: center;
     }
   </style>
 </head>
@@ -94,12 +80,14 @@
       }
 
       initUserData() {
-        if (!localStorage.getItem('users')) {
-          const users = [
-            { username: 'tiara', password: 'tiara123' }
-          ];
-          localStorage.setItem('users', JSON.stringify(users));
-        }
+        const users = [
+          { username: 'tiara', password: 'tiara123' }
+        ];
+        localStorage.setItem('tiaraUsers', JSON.stringify(users));
+      }
+
+      getUsers() {
+        return JSON.parse(localStorage.getItem('tiaraUsers'));
       }
 
       showLoginForm() {
@@ -119,28 +107,26 @@
       }
 
       handleLogin() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
 
-        const users = JSON.parse(localStorage.getItem('users'));
+        const users = this.getUsers();
         const validUser = users.find(
           u => u.username === username && u.password === password
         );
 
         if (!validUser) {
-          alert('❌ Login gagal, periksa username atau password!');
+          alert('❌ Login gagal!');
         } else {
-          this.showProfile(validUser.username);
+          this.showProfile(username);
         }
       }
 
       showProfile(username) {
         this.container.innerHTML = `
-          <div class="user-info">
-            <h2>Welcome 💖</h2>
-            <p>Hai <b>${username}</b>, kamu berhasil login</p>
-            <button id="logoutBtn">Logout</button>
-          </div>
+          <h2>Welcome 💖</h2>
+          <p>Hai <b>${username}</b>, kamu berhasil login</p>
+          <button id="logoutBtn">Logout</button>
         `;
 
         document.getElementById('logoutBtn')
